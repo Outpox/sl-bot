@@ -24,7 +24,7 @@ export class Command {
     args = [],
     help,
   }: CommandOptions) {
-    this.prefix = prefix
+    this.prefix = process.env.env === 'development' ? `${prefix}_dev` : prefix
     this.func = func
     this.argsSeparator = argsSeparator
     this.args = args
@@ -56,13 +56,13 @@ export class Command {
     }
     if (this.args.length > 1) {
       return `Utilisation: \`${this.prefix} ${this.args.join(
-        this.argsSeparator
+        this.argsSeparator,
       )}\`.\nPense bien à séparer tes paramètres avec \`${
         this.argsSeparator
-      }\`.`
+        }\`.`
     } else {
       return `Utilisation: \`${this.prefix} ${this.args.join(
-        this.argsSeparator
+        this.argsSeparator,
       )}\`.`
     }
   }

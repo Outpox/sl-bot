@@ -4,18 +4,17 @@ dotenv.config()
 import { Command } from './discord/command'
 import * as Discord from 'discord.js'
 
-import * as songlink from './songlink/songlink'
+import { SonglinkClient } from './songlink'
 
 const client = new Discord.Client()
+const songlinkClient = new SonglinkClient()
 
 const commandBag = [
   new Command({
     prefix: '!sl',
     func: (ctx, args) => {
-    songlink.queryItunesApi(args!['query']).then(response => {
-        if (response.resultCount > 0) {
-          ctx.channel.send(songlink.getSongLinkUrl(response))
-        }
+      songlinkClient.search(ctx.author, args!['query']).then(response => {
+        ctx.channel.send(response)
       })
     },
     args: ['query'],
