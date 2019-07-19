@@ -57,6 +57,7 @@ export class ItunesClient {
   async queryItunesApi(arg: string, attempts: number = 0): Promise<ItunesResponse> {
     let response
     try {
+      console.log(`[${attempts}] querying`, this.getItunesUrl(arg))
       response = (await Axios.get(this.getItunesUrl(arg))) as AxiosResponse<object>
     } catch (err) {
       if (attempts < 5) {
