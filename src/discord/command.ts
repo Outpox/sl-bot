@@ -68,10 +68,7 @@ export class Command {
   }
 
   matchInput(rawInput: string): boolean {
-    if (rawInput) {
-      return rawInput.toLowerCase().startsWith(this.prefix)
-    }
-    return false
+    return this.prefix === rawInput.split(' ')[0]
   }
 
   private _cleanInput(rawInput: string): string {
