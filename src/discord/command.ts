@@ -24,7 +24,7 @@ export class Command {
     args = [],
     help,
   }: CommandOptions) {
-    this.prefix = process.env.env === 'development' ? `${prefix}_dev` : prefix
+    this.prefix = process.env.ENV !== 'production' ? `${prefix}_dev` : prefix
     this.func = func
     this.argsSeparator = argsSeparator
     this.args = args

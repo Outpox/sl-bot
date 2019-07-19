@@ -82,7 +82,7 @@ export class ItunesClient {
    * @param response An itunes api response.
    */
   private getSongLinkUrl(response: ItunesResponse): string {
-    if (process.env.env === 'development') {
+    if (process.env.ENV !== 'production') {
       console.log(response)
     }
     const first = response.results[0]
