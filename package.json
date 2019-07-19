@@ -13,7 +13,10 @@
   "dependencies": {
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
-    "dotenv": "^8.0.0"
+    "dotenv": "^8.0.0",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.0.9",
+    "typeorm": "^0.3.0-alpha.23"
   },
   "devDependencies": {
     "@types/node": "^12.0.4",
