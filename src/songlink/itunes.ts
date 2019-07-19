@@ -74,7 +74,7 @@ export class ItunesClient {
    */
   private getItunesUrl(arg: string): string {
     // entity: song only because we are looking for trackId
-    return `https://itunes.apple.com/search?term=${arg}&country=FR&entity=song&limit=1`
+    return `https://itunes.apple.com/search?term=${encodeURIComponent(arg)}&country=${process.env.DEFAULT_LANG}&entity=song&limit=5`
   }
 
   /**
