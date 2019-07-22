@@ -10,10 +10,18 @@ import { RichEmbed, User } from 'discord.js'
 const itunesClient = new ItunesClient()
 
 export const platforms = [
-    'appleMusic', 'spotify', 'youtube',
-    'youtubeMusic', 'google', 'pandora', 'deezer',
-    'amazonMusic', 'tidal', 'napster', 'yandex',
-    'itunes', 'googleStore', 'amazonStore',
+    {
+        name: 'spotify', emoji: '601869177950568448',
+    },
+    {
+        name: 'youtube', emoji: '601875627594874988',
+    },
+    {
+        name: 'google', emoji: '601874400911949864',
+    },
+    {
+        name: 'deezer', emoji: '601875350149922816',
+    },
 ]
 
 export interface SonglinkClient {
