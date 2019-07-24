@@ -32,7 +32,7 @@ export class Command {
   }
 
   execute(context: Discord.Message) {
-    if (!this.matchInput(context.content)) {
+    if (context.author.bot === false && !this.matchInput(context.content)) {
       return
     }
 
