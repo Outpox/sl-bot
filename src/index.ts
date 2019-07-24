@@ -5,6 +5,7 @@ import { Command } from './discord/command'
 import * as Discord from 'discord.js'
 
 import { SonglinkClient } from './songlink'
+import { discordAnalytics } from './utils/analytics'
 
 const client = new Discord.Client()
 const songlinkClient = new SonglinkClient()
@@ -24,6 +25,8 @@ const commandBag = [
 client.on('ready', async () => {
   console.log('Bot ready!')
 })
+
+discordAnalytics(client)
 
 client.on('message', message => {
   if (!message.author.bot) {
