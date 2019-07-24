@@ -1,12 +1,12 @@
 import { Client } from 'discord.js'
-import { logger } from './logs'
+import { guildEventsLogger } from './logs'
 
 export function discordAnalytics(client: Client) {
   client.on('guildCreate', guild => {
-    logger.info('guildCreate', guild)
+    guildEventsLogger.info('guildCreate', guild)
   })
 
   client.on('guildDelete', guild => {
-    logger.info('guildDelete', guild)
+    guildEventsLogger.info('guildDelete', guild)
   })
 }

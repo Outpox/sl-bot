@@ -6,6 +6,7 @@ import { richEmbedfromSonglinkResponse } from '../discord'
 import { ItunesClient } from './itunes'
 import { SonglinkResponse, ParsedSonglinkResponse, SonglinkEntity } from '../../typings'
 import { RichEmbed, User } from 'discord.js'
+import { queryLogger } from '../utils/logs'
 
 const itunesClient = new ItunesClient()
 
@@ -35,13 +36,17 @@ export class SonglinkClient {
      * @param query user query or platform url ie Spotify.
      */
     search(author: User, query: string): Promise<RichEmbed> {
+        queryLogger.info('userQuery', {
+            query,
+            author: author.id,
+        })
         return this.parseQuery(query)
             .then(parsedQuery => this.querySonglinkApi(parsedQuery))
             .then(response => this.parseSonglinkResponse(response))
             .then(parsedResponse => richEmbedfromSonglinkResponse(author, parsedResponse))
     }
 
-    parseSonglinkResponse(response: SonglinkResponse): Promise<ParsedSonglinkResponse> {
+    private parseSonglinkResponse(response: SonglinkResponse): Promise<ParsedSonglinkResponse> {
         const entity: SonglinkEntity = response.entitiesByUniqueId[response.entityUniqueId]
         return Promise.resolve({
             artist: entity.artistName,

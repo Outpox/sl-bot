@@ -5,13 +5,7 @@ const esTransportOpts: ElasticsearchTransportOptions = {
   level: 'info',
 }
 
-export const logger = winston.createLogger({
-  transports: [
-    new Elasticsearch(esTransportOpts),
-  ],
-})
-
-export const eventsLogger = winston.createLogger({
+export const guildEventsLogger = winston.createLogger({
   transports: [
     new Elasticsearch({ ...esTransportOpts, index: 'events' }),
   ],
