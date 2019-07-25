@@ -1,10 +1,17 @@
 import * as Discord from 'discord.js'
 
+export enum ChannelType {
+  TextChannel,
+  DMChannel,
+  GroupDMChannel,
+}
+
 export interface Command {
   prefix: string
   func: (ctx: Discord.Message, args?: string[]) => void
   argsSeparator: string
   args: string[]
+  allowedChannels: ChannelType[]
   _help?: string
 }
 
@@ -13,6 +20,7 @@ export interface CommandOptions {
   func: (ctx: Discord.Message, args?: string[]) => void
   argsSeparator?: string
   args?: string[]
+  allowedChannels?: ChannelType[]
   help?: string
 }
 
@@ -20,19 +28,22 @@ export class Command {
   constructor({
     prefix,
     func,
-    argsSeparator: argsSeparator = ', ',
+    argsSeparator = ', ',
     args = [],
+    allowedChannels = [ChannelType.TextChannel, ChannelType.DMChannel, ChannelType.GroupDMChannel],
     help,
   }: CommandOptions) {
     this.prefix = process.env.ENV !== 'production' ? `${prefix}_dev` : prefix
     this.func = func
     this.argsSeparator = argsSeparator
     this.args = args
+    this.allowedChannels = allowedChannels
     this._help = help
   }
 
   execute(context: Discord.Message) {
-    if (context.author.bot === false && !this.matchInput(context.content)) {
+    // Stop execution if the message comes from a bot or if the channel is not allowed or if the input is not matched.
+    if (context.author.bot === true || !this._validateChannelType(context.channel) || !this._matchInput(context.content)) {
       return
     }
 
@@ -67,8 +78,21 @@ export class Command {
     }
   }
 
-  matchInput(rawInput: string): boolean {
+  private _matchInput(rawInput: string): boolean {
     return this.prefix === rawInput.split(' ')[0]
+  }
+
+  private _validateChannelType(channel: Discord.TextChannel | Discord.DMChannel | Discord.GroupDMChannel): boolean {
+    if (channel instanceof Discord.TextChannel && this.allowedChannels.includes(ChannelType.TextChannel)) {
+      return true
+    }
+    if (channel instanceof Discord.DMChannel && this.allowedChannels.includes(ChannelType.DMChannel)) {
+      return true
+    }
+    if (channel instanceof Discord.GroupDMChannel && this.allowedChannels.includes(ChannelType.GroupDMChannel)) {
+      return true
+    }
+    return false
   }
 
   private _cleanInput(rawInput: string): string {

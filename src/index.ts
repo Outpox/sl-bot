@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import { Command } from './discord/command'
+import { Command, ChannelType } from './discord/command'
 import * as Discord from 'discord.js'
 
 import { SonglinkClient } from './songlink'
@@ -14,11 +14,12 @@ const commandBag = [
   new Command({
     prefix: '!sl',
     func: (ctx, args) => {
-      songlinkClient.search(ctx.author, args!['query']).then(response => {
+      songlinkClient.search(ctx, args!['query']).then(response => {
         ctx.channel.send(response)
       })
     },
     args: ['query'],
+    allowedChannels: [ChannelType.TextChannel],
   }),
 ]
 
