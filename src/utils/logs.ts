@@ -13,7 +13,7 @@ export const log = winston.createLogger({
 
 export const guildEventLogger = winston.createLogger({
   transports: [
-    new Elasticsearch({ ...esTransportOpts, indexPrefix: 'guildEvents' }),
+    new Elasticsearch({ ...esTransportOpts, indexPrefix: 'guild-events' }),
   ],
 })
 
