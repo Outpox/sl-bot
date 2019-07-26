@@ -1,10 +1,10 @@
 // https://itunes.apple.com/search?term=jamiroquai&country=FR&entity=song,album&callback=__jp0
 
 import Axios, { AxiosResponse } from 'axios'
+import { queryInfoLogger } from '../utils/logs'
 
 export interface ItunesClient {
-  search(arg: string): Promise<string>
-  queryItunesApi(arg: string, attempts?: number): Promise<ItunesResponse>
+  queryItunesApi(arg: string, queryUuid: string, attempts?: number): Promise<ItunesResponse>
 }
 
 export interface ItunesTrack {
@@ -24,21 +24,6 @@ export interface ItunesResponse {
  */
 export class ItunesClient {
   /**
-   * Takes a query and return a songlink url.
-   *
-   * @param arg the track the user is looking for
-   */
-  async search(arg: string): Promise<string> {
-    return this.queryItunesApi(arg).then(response => {
-      if (response.resultCount > 0) {
-        return Promise.resolve(this.getSongLinkUrl(response))
-      } else {
-        return Promise.resolve('')
-      }
-    })
-  }
-
-  /**
    * Query the itunes api with the user query.
    * Returns a promise of an ItunesResponse.
    *
@@ -54,14 +39,16 @@ export class ItunesClient {
    * @param arg the track the user is looking for.
    * @param attempts (optional) the query may fail so we keep count of the amount of retry before we give up.
    */
-  async queryItunesApi(arg: string, attempts: number = 0): Promise<ItunesResponse> {
+  async queryItunesApi(arg: string, queryUuid: string, attempts: number = 0): Promise<ItunesResponse> {
     let response
     try {
-      console.log(`[${attempts}] querying`, this.getItunesUrl(arg))
-      response = (await Axios.get(this.getItunesUrl(arg))) as AxiosResponse<object>
+      const itunesUrl = this.getItunesUrl(arg)
+      queryInfoLogger.info(`[${attempts}] querying ${itunesUrl}`, { queryUuid })
+      response = (await Axios.get(itunesUrl)) as AxiosResponse<object>
     } catch (err) {
       if (attempts < 5) {
-        response = await this.queryItunesApi(arg, attempts++)
+        attempts += 1
+        response = await this.queryItunesApi(arg, queryUuid, attempts)
       }
     }
     return Promise.resolve(response.data as ItunesResponse)
@@ -75,18 +62,5 @@ export class ItunesClient {
   private getItunesUrl(arg: string): string {
     // entity: song only because we are looking for trackId
     return `https://itunes.apple.com/search?term=${encodeURIComponent(arg)}&country=${process.env.DEFAULT_LANG}&entity=song&limit=5`
-  }
-
-  /**
-   * Prepare a songlink url from an itunes response by extracting the track id of the first entity.
-   *
-   * @param response An itunes api response.
-   */
-  private getSongLinkUrl(response: ItunesResponse): string {
-    if (process.env.ENV !== 'production') {
-      console.log(response)
-    }
-    const first = response.results[0]
-    return `https://song.link/i/${first.trackId}`
   }
 }

@@ -23,6 +23,13 @@ export const queryLogger = winston.createLogger({
   ],
 })
 
+export const queryInfoLogger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new Elasticsearch({ ...esTransportOpts, indexPrefix: 'queries-info' }),
+  ],
+})
+
 export const errorLogger = winston.createLogger({
   transports: [
     new Elasticsearch({ ...esTransportOpts, indexPrefix: 'errors' }),

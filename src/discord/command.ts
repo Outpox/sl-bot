@@ -47,8 +47,6 @@ export class Command {
       return
     }
 
-    console.log(`${context.author.tag} sent the command: "${context.content}"`)
-
     if (this.args.length === 0) {
       return this.func(context)
     }
