@@ -26,7 +26,7 @@ export const queryLogger = winston.createLogger({
 export const queryInfoLogger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
-    new Elasticsearch({ ...esTransportOpts, indexPrefix: 'queries-info' }),
+    new Elasticsearch({ ...esTransportOpts, indexPrefix: 'info-queries' }),
   ],
 })
 
