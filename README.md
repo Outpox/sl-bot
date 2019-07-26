@@ -5,6 +5,10 @@ Copy `.env.example` to `.env` and set your discord bot token.
 Install dependencies with `npm install`  
 Start the bot with `npm start` and the bot should appear after a bit on the communities he's part of.  
 
+#### Todo
+* Add throttling (1 query/s max per user)
+* User and server/guild blacklist
+* `sl_help` so that our users can contact us if need be
 
 #### Improvements idea
 * Delete the user's message
