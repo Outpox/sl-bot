@@ -6,6 +6,7 @@ import * as Discord from 'discord.js'
 
 import { SonglinkClient } from './songlink'
 import { discordAnalytics } from './utils/analytics'
+import { getIntroMessage } from './discord'
 
 const client = new Discord.Client()
 const songlinkClient = new SonglinkClient()
@@ -29,6 +30,10 @@ client.on('ready', async () => {
 })
 
 discordAnalytics(client)
+
+client.on('guildCreate', guild => {
+  (guild.systemChannel as Discord.TextChannel).send(getIntroMessage())
+})
 
 client.on('message', message => {
   if (!message.author.bot) {
