@@ -13,16 +13,19 @@ const itunesClient = new ItunesClient()
 
 export const platforms = [
     {
-        name: 'spotify', emoji: '601869177950568448',
+        key: 'spotify', emoji: '601869177950568448', display: 'Spotify',
     },
     {
-        name: 'youtube', emoji: '601875627594874988',
+        key: 'youtube', emoji: '601875627594874988', display: 'Youtube',
     },
     {
-        name: 'google', emoji: '601874400911949864',
+        key: 'google', emoji: '601874400911949864', display: 'Google Music',
     },
     {
-        name: 'deezer', emoji: '601875350149922816',
+        key: 'deezer', emoji: '601875350149922816', display: 'Deezer',
+    },
+    {
+        key: 'appleMusic', emoji: '606458463610208276', display: 'Apple Music',
     },
 ]
 

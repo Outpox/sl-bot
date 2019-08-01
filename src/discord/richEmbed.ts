@@ -11,11 +11,11 @@ export function buildFields(response: ParsedSonglinkResponse): RichEmbedField[] 
   const fields: RichEmbedField[] = []
 
   platforms
-    .filter(platform => response.linksByPlatform[platform.name] !== undefined)
+    .filter(platform => response.linksByPlatform[platform.key] !== undefined)
     .forEach(platform => {
       fields.push({
-        name: platform.name.charAt(0).toUpperCase() + platform.name.slice(1),
-        value: `[<:${platform.name}:${platform.emoji}>](${response.linksByPlatform[platform.name].url})`,
+        name: platform.display,
+        value: `[<:${platform.key}:${platform.emoji}>](${response.linksByPlatform[platform.key].url})`,
         inline: true,
       })
     })
