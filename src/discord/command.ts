@@ -8,6 +8,7 @@ export enum ChannelType {
 
 export interface Command {
   prefix: string
+  alias: string[]
   func: (ctx: Discord.Message, args?: string[]) => void
   argsSeparator: string
   args: string[]
@@ -17,6 +18,7 @@ export interface Command {
 
 export interface CommandOptions {
   prefix: string
+  alias?: string[]
   func: (ctx: Discord.Message, args?: string[]) => void
   argsSeparator?: string
   args?: string[]
@@ -27,6 +29,7 @@ export interface CommandOptions {
 export class Command {
   constructor({
     prefix,
+    alias = [],
     func,
     argsSeparator = ', ',
     args = [],
@@ -34,6 +37,7 @@ export class Command {
     help,
   }: CommandOptions) {
     this.prefix = process.env.ENV !== 'production' ? `${prefix}_dev` : prefix
+    this.alias = alias
     this.func = func
     this.argsSeparator = argsSeparator
     this.args = args
@@ -77,7 +81,14 @@ export class Command {
   }
 
   private _matchInput(rawInput: string): boolean {
-    return this.prefix === rawInput.split(' ')[0]
+    const firstWord = rawInput.split(' ')[0]
+    let matchAlias = false
+    this.alias.forEach(alias => {
+      if (alias === firstWord) {
+        matchAlias = true
+      }
+    })
+    return this.prefix === firstWord || matchAlias
   }
 
   private _validateChannelType(channel: Discord.TextChannel | Discord.DMChannel | Discord.GroupDMChannel): boolean {

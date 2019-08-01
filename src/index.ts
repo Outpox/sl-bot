@@ -13,6 +13,7 @@ const songlinkClient = new SonglinkClient()
 const commandBag = [
   new Command({
     prefix: '!sl',
+    alias: ['!songlink'],
     func: (ctx, args) => {
       songlinkClient.search(ctx, args!['query']).then(response => {
         ctx.channel.send(response)

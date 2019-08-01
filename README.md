@@ -26,3 +26,4 @@ Finished
 * ~~Add some damn real logs (winston)~~
 * ~~Add a listening mode: parse spotify & co links automatically~~
 * ~~Use a limited set of platforms in an effort to ease the songlink api load~~
+* ~~Command alias~~
