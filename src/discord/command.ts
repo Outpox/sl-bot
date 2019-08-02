@@ -74,13 +74,13 @@ export class Command {
       return this._help
     }
     if (this.args.length > 1) {
-      return `Utilisation: \`${this.prefix} ${this.args.join(
+      return `Usage: \`${this.prefix} ${this.args.join(
         this.argsSeparator,
-      )}\`.\nPense bien à séparer tes paramètres avec \`${
+      )}\`.\nPlease remember to split your parameters with \`${
         this.argsSeparator
         }\`.`
     } else {
-      return `Utilisation: \`${this.prefix} ${this.args.join(
+      return `Usage: \`${this.prefix} ${this.args.join(
         this.argsSeparator,
       )}\`.`
     }
@@ -124,12 +124,12 @@ export class Command {
     if (splittedArgs.length !== this.args.length) {
       const given =
         splittedArgs.length === 1 || splittedArgs.length === 0
-          ? `${splittedArgs.length} paramètre fourni`
-          : `${splittedArgs.length} paramètres fournis`
+          ? `${splittedArgs.length} given parameter`
+          : `${splittedArgs.length} given parameters`
       const expected =
         this.args.length === 1 || this.args.length === 0
-          ? `${this.args.length} paramètre attendu`
-          : `${this.args.length} paramètres attendus`
+          ? `${this.args.length} expected parameter`
+          : `${this.args.length} expected parameters`
       throw new Error(`${given}, ${expected}`)
     }
 
