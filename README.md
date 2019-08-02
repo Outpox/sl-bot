@@ -6,6 +6,7 @@ Install dependencies with `npm install`
 Start the bot with `npm start` and the bot should appear after a bit on the communities he's part of.  
 
 #### Todo
+* Support other languages
 * Add throttling (1 query/s max per user)
 * User and server/guild blacklist
 
