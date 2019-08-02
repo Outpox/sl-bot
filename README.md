@@ -28,3 +28,4 @@ Finished
 * ~~Command alias~~
 * ~~Intro message~~
 * ~~`sl_help` so that our users can contact us if need be~~
+* ~~Handle errors when no song can be found to get rid of the placeholders~~

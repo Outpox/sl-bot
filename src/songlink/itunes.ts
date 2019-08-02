@@ -2,6 +2,7 @@
 
 import Axios, { AxiosResponse } from 'axios'
 import { queryInfoLogger } from '../utils/logs'
+import { CustomError, ERROR_TYPE } from '../utils/errors'
 
 export interface ItunesClient {
   queryItunesApi(arg: string, queryUuid: string, attempts?: number): Promise<ItunesResponse>
@@ -46,10 +47,11 @@ export class ItunesClient {
       queryInfoLogger.info(`[${attempts}] querying ${itunesUrl}`, { queryUuid })
       response = (await Axios.get(itunesUrl)) as AxiosResponse<object>
     } catch (err) {
-      if (attempts < 5) {
-        attempts += 1
-        response = await this.queryItunesApi(arg, queryUuid, attempts)
-      }
+      throw new CustomError({ message: 'Error querying iTunes', errorType: ERROR_TYPE.ITUNES_API, queryUuid, originalError: err })
+      // if (attempts < 5) {
+      //   attempts += 1
+      //   response = await this.queryItunesApi(arg, queryUuid, attempts)
+      // }
     }
     return Promise.resolve(response.data as ItunesResponse)
   }
