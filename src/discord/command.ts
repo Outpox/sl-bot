@@ -36,8 +36,14 @@ export class Command {
     allowedChannels = [ChannelType.TextChannel, ChannelType.DMChannel, ChannelType.GroupDMChannel],
     help,
   }: CommandOptions) {
-    this.prefix = process.env.ENV !== 'production' ? `${prefix}_dev` : prefix
-    this.alias = alias
+    if (process.env.ENV !== 'production') {
+      this.prefix = `${prefix}_dev`
+      this.alias = alias.map(alia => `${alia}_dev`)
+    } else {
+      this.prefix = prefix
+      this.alias = alias
+    }
+
     this.func = func
     this.argsSeparator = argsSeparator
     this.args = args
