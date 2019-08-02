@@ -6,7 +6,7 @@ import * as Discord from 'discord.js'
 
 import { SonglinkClient } from './songlink'
 import { discordAnalytics } from './utils/analytics'
-import { getIntroMessage } from './discord'
+import { getIntroMessage, getHelpMessage } from './discord'
 
 const client = new Discord.Client()
 const songlinkClient = new SonglinkClient()
@@ -23,10 +23,17 @@ const commandBag = [
     args: ['query'],
     allowedChannels: [ChannelType.TextChannel],
   }),
+  new Command({
+    prefix: '!sl_help',
+    func: ctx => {
+      ctx.channel.send(getHelpMessage())
+    },
+  }),
 ]
 
 client.on('ready', async () => {
   console.log('Bot ready!')
+  client.user.setActivity('!sl_help for help', { type: 'LISTENING' })
 })
 
 discordAnalytics(client)

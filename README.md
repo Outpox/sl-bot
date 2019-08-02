@@ -8,7 +8,6 @@ Start the bot with `npm start` and the bot should appear after a bit on the comm
 #### Todo
 * Add throttling (1 query/s max per user)
 * User and server/guild blacklist
-* `sl_help` so that our users can contact us if need be
 
 #### Improvements idea
 * Delete the user's message
@@ -28,3 +27,4 @@ Finished
 * ~~Use a limited set of platforms in an effort to ease the songlink api load~~
 * ~~Command alias~~
 * ~~Intro message~~
+* ~~`sl_help` so that our users can contact us if need be~~
