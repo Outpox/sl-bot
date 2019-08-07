@@ -2,7 +2,7 @@
 
 import Axios, { AxiosResponse } from 'axios'
 import { URL } from 'url'
-import { richEmbedfromSonglinkResponse } from '../discord'
+import { richEmbedfromSonglinkResponse } from '../discord/richEmbed'
 import { ItunesClient } from './itunes'
 import { SonglinkResponse, ParsedSonglinkResponse, SonglinkEntity } from '../../typings'
 import { RichEmbed, Message, RichEmbedOptions } from 'discord.js'
