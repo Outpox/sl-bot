@@ -14,12 +14,14 @@
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
+    "redis": "^2.8.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
     "winston-elasticsearch": "^0.7.12"
   },
   "devDependencies": {
     "@types/node": "^12.6.8",
+    "@types/redis": "^2.8.13",
     "@types/uuid": "^3.4.5",
     "@types/winston": "^2.4.4",
     "ts-node": "^8.3.0",
