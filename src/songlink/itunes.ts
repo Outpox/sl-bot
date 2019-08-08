@@ -28,30 +28,17 @@ export class ItunesClient {
    * Query the itunes api with the user query.
    * Returns a promise of an ItunesResponse.
    *
-   * TODO
-   *  Manage HTTP error
-   * (node:19415) UnhandledPromiseRejectionWarning: Error: getaddrinfo ENOTFOUND itunes.apple.com itunes.apple.com:443
-   *   at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:67:26)
-   *  (node:19415) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a
-   *  catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 2)
-   *  (node:19415) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate
-   *  the Node.js process with a non-zero exit code.
-   *
    * @param arg the track the user is looking for.
    * @param attempts (optional) the query may fail so we keep count of the amount of retry before we give up.
    */
-  async queryItunesApi(arg: string, queryUuid: string, attempts: number = 0): Promise<ItunesResponse> {
+  async queryItunesApi(arg: string, queryUuid: string): Promise<ItunesResponse> {
     let response
     try {
       const itunesUrl = this.getItunesUrl(arg)
-      queryInfoLogger.info(`[${attempts}] querying ${itunesUrl}`, { queryUuid })
+      queryInfoLogger.info(`Querying ${itunesUrl}`, { queryUuid })
       response = (await Axios.get(itunesUrl)) as AxiosResponse<object>
     } catch (err) {
       throw new CustomError({ message: 'Error querying iTunes', errorType: ERROR_TYPE.ITUNES_API, queryUuid, originalError: err })
-      // if (attempts < 5) {
-      //   attempts += 1
-      //   response = await this.queryItunesApi(arg, queryUuid, attempts)
-      // }
     }
     return Promise.resolve(response.data as ItunesResponse)
   }
