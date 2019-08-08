@@ -9,6 +9,7 @@ import { RichEmbed, Message, RichEmbedOptions } from 'discord.js'
 import { queryLogger, queryInfoLogger, errorLogger } from '../utils/logs'
 import uuid from 'uuid/v1'
 import { ERROR_TYPE, CustomError } from '../utils/errors'
+import { asyncGet } from '../utils/redis'
 
 const itunesClient = new ItunesClient()
 
@@ -40,7 +41,7 @@ export class SonglinkClient {
      *
      * @param query user query or platform url ie Spotify.
      */
-    search(context: Message, query: string): Promise<RichEmbed> {
+    async search(context: Message, query: string): Promise<RichEmbed | RichEmbed[]> {
         const queryUuid = uuid()
         queryInfoLogger.info(`${context.author.tag} sent the command: '${context.content}'`, { queryUuid })
         queryLogger.info('userQuery', {
@@ -55,11 +56,29 @@ export class SonglinkClient {
                 name: context.guild.name,
             },
         })
-        return this.parseQuery(query, queryUuid)
-            .then(parsedQuery => this.querySonglinkApi(parsedQuery, queryUuid))
-            .then(response => this.parseSonglinkResponse(response))
-            .then(parsedResponse => richEmbedfromSonglinkResponse(context.author, parsedResponse))
-            .catch((err: CustomError) => this.handleError(err))
+
+        try {
+            const parsedQuery = await this.parseQuery(query, queryUuid)
+            if (parsedQuery instanceof URL) {
+                // If the user given query is an URL we've just got to hit the Songlink API.
+                return this.querySonglinkApi(parsedQuery, queryUuid)
+                    .then(response => this.parseSonglinkResponse(response))
+                    .then(parsedResponse => richEmbedfromSonglinkResponse(context.author, parsedResponse))
+            } else {
+                // However if the query was a string we had to query the iTunes API which returns an array of response.
+                // So for each response we hit the Songlink API and then create a RichEmbed from it.
+                // The process has to be split because `promises` is of type Promise<ParsedSonglinkResponse>[] which is an array of promises and as
+                // such must be resolved using Promise.all(). We can then map the result and create RichEmbeds of type Promise<RichEmbed[]>.
+                // Doing everything at once would yield the type Promise<RichEmbed>[].
+                const promises = parsedQuery.map(pQuery => this.querySonglinkApi(pQuery, queryUuid)
+                    .then(response => this.parseSonglinkResponse(response)))
+
+                return Promise.all(promises)
+                    .then(response => response.map(resp => richEmbedfromSonglinkResponse(context.author, resp)))
+            }
+        } catch (err) {
+            return this.handleError(err)
+        }
     }
 
     private parseSonglinkResponse(response: SonglinkResponse): Promise<ParsedSonglinkResponse> {
@@ -79,7 +98,7 @@ export class SonglinkClient {
      *
      * @param query an url or a string to search
      */
-    private parseQuery(query: string, queryUuid: string): Promise<number | URL> {
+    private parseQuery(query: string, queryUuid: string): Promise<number[] | URL> {
         try {
             return Promise.resolve(new URL(query))
         } catch (err) {
@@ -87,8 +106,9 @@ export class SonglinkClient {
             return itunesClient.queryItunesApi(query, queryUuid).then(response => {
                 if (response.resultCount > 0) {
                     queryInfoLogger.info('We\'ve got a result on iTunes', { queryUuid })
-                    const first = response.results[0]
-                    return first.trackId!
+                    return response.results
+                        .filter(track => track.trackId !== undefined)
+                        .map(track => track.trackId!)
                 } else {
                     throw new CustomError({ message: 'No result on iTunes for the query', errorType: ERROR_TYPE.NOT_FOUND, queryUuid })
                 }
@@ -97,6 +117,10 @@ export class SonglinkClient {
     }
 
     private async querySonglinkApi(query: number | URL, queryUuid: string): Promise<SonglinkResponse> {
+        const cache = await asyncGet(query.toString())
+        if (cache) {
+            return (cache as unknown) as SonglinkResponse
+        }
         const slUrl = this.getSonglinkApiUrl(query)
         queryInfoLogger.info('Querying Songlink api ' + slUrl.replace(process.env.SL_API_KEY!, 'songlink_api_key'), { queryUuid })
         try {
@@ -132,7 +156,7 @@ export class SonglinkClient {
             case ERROR_TYPE.ITUNES_API:
                 config.description = 'An error occured.'
                 break
-            }
+        }
 
         return Promise.resolve(new RichEmbed(config))
     }

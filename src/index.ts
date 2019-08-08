@@ -4,22 +4,16 @@ dotenv.config()
 import { Command, ChannelType } from './discord/command'
 import * as Discord from 'discord.js'
 
-import { SonglinkClient } from './songlink'
 import { discordAnalytics } from './utils/analytics'
-import { getIntroMessage, getHelpMessage } from './discord'
+import { getIntroMessage, getHelpMessage, handleQuery } from './discord'
 
 const client = new Discord.Client()
-const songlinkClient = new SonglinkClient()
 
 const commandBag = [
   new Command({
     prefix: '!sl',
     alias: ['!songlink'],
-    func: (ctx, args) => {
-      songlinkClient.search(ctx, args!['query']).then(response => {
-        ctx.channel.send(response)
-      })
-    },
+    func: (ctx, args) => handleQuery(ctx, client, args),
     args: ['query'],
     allowedChannels: [ChannelType.TextChannel],
   }),

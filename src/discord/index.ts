@@ -1,5 +1,18 @@
+import { Message, RichEmbed, Client } from 'discord.js'
+import { SonglinkClient } from '../songlink'
+import { Carousel } from './carousel'
 
+const songlinkClient = new SonglinkClient()
 
+export async function handleQuery(ctx: Message, client: Client, args?: string[]) {
+  const msg = await ctx.channel.send(new RichEmbed({ title: 'Songlink', description: 'Searching...', color: 0X00c4b0 })) as Message
+  const result = await songlinkClient.search(ctx, args!['query'])
+
+  if (Array.isArray(result)) {
+    new Carousel(result).attach(client, msg)
+  } else {
+    msg.edit(result)
+  }
 }
 
 export function getIntroMessage(): string {
