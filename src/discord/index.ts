@@ -9,7 +9,7 @@ export async function handleQuery(ctx: Message, client: Client, args?: string[])
   const result = await songlinkClient.search(ctx, args!['query'])
 
   if (Array.isArray(result)) {
-    new Carousel(result).attach(client, msg)
+    new Carousel(client, msg, ctx.author, result).attach()
   } else {
     msg.edit(result)
   }

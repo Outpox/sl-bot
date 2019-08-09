@@ -1,27 +1,76 @@
-import { Message, RichEmbed, Client } from 'discord.js'
+import { Message, RichEmbed, Client, Emoji, User } from 'discord.js'
+
+enum Emojis {
+  next = '➡',
+  previous = '⬅',
+}
 
 export interface Carousel {
-  messages: RichEmbed[]
+  client: Client
+  botMessage: Message
+  requestAuthor: User
+  results: RichEmbed[]
 }
 
 export class Carousel {
   index = 0
 
-  constructor(queries: RichEmbed[]) {
-    this.messages = queries
+  constructor(client: Client, botMessage: Message, requestAuthor: User, queries: RichEmbed[]) {
+    this.client = client
+    this.botMessage = botMessage
+    this.requestAuthor = requestAuthor
+    this.results = queries
+
+    this.addFooterToResults()
   }
 
-  attach(client: Client, message: Message) {
-    message.edit(this.messages[this.index])
-    message.react('⬅')
-    message.react('➡')
+  async attach() {
+    this.renderResult()
+    await this.botMessage.react(Emojis.previous)
+    this.botMessage.react(Emojis.next)
 
-    client.on('messageReactionAdd', (messageReaction, user) => {
-      console.log(messageReaction.message.id === message.id)
-      console.log(user !== client.user)
-      if (messageReaction.message.id === message.id && user !== client.user) {
-        // switch (messageReaction.emoji)
-      }
-    })
+    // Listen to all reactions from the original user only.
+    this.botMessage.createReactionCollector((_, user) => user === this.requestAuthor && !user.bot)
+      .on('collect', async messageReaction => {
+        // Remove all reactions except from the bot
+        (await messageReaction.fetchUsers())
+          .filter(u => u !== this.client.user)
+          .forEach(u => messageReaction.remove(u))
+
+        switch (messageReaction.emoji.name) {
+          case Emojis.next:
+            this.nextResult()
+            break
+          case Emojis.previous:
+            this.previousResult()
+            break
+        }
+      })
+  }
+
+  private nextResult() {
+    this.index += 1
+    if (this.index > this.results.length - 1) {
+      this.index = 0
+    }
+    this.renderResult()
+  }
+
+  private previousResult() {
+    this.index -= 1
+    if (this.index < 0) {
+      this.index = this.results.length - 1
+    }
+    this.renderResult()
+  }
+
+  private renderResult() {
+    this.botMessage.edit(this.results[this.index])
+  }
+
+  private addFooterToResults() {
+    for (let i = 0; i < this.results.length; i++) {
+      this.results[i].setFooter(`Result ${i + 1}/${this.results.length}`)
+    }
   }
 }
