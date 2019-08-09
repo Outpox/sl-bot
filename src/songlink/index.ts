@@ -71,10 +71,17 @@ export class SonglinkClient {
                 // such must be resolved using Promise.all(). We can then map the result and create RichEmbeds of type Promise<RichEmbed[]>.
                 // Doing everything at once would yield the type Promise<RichEmbed>[].
                 const promises = parsedQuery.map(pQuery => this.querySonglinkApi(pQuery, queryUuid)
-                    .then(response => this.parseSonglinkResponse(response)))
+                    .then(response => this.parseSonglinkResponse(response))
+                    .catch(err => {
+                        console.log(err)
+                        return null
+                    }),
+                )
 
                 return Promise.all(promises)
-                    .then(response => response.map(resp => richEmbedfromSonglinkResponse(context.author, resp)))
+                    .then(response => response
+                        .filter(resp => resp !== null)
+                        .map(resp => richEmbedfromSonglinkResponse(context.author, resp!)))
             }
         } catch (err) {
             return this.handleError(err)
