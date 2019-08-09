@@ -9,7 +9,7 @@ import { RichEmbed, Message, RichEmbedOptions } from 'discord.js'
 import { queryLogger, queryInfoLogger, errorLogger } from '../utils/logs'
 import uuid from 'uuid/v1'
 import { ERROR_TYPE, CustomError } from '../utils/errors'
-import { asyncGet } from '../utils/redis'
+import { asyncGet, redisClient } from '../utils/redis'
 
 const itunesClient = new ItunesClient()
 
@@ -119,13 +119,18 @@ export class SonglinkClient {
     private async querySonglinkApi(query: number | URL, queryUuid: string): Promise<SonglinkResponse> {
         const cache = await asyncGet(query.toString())
         if (cache) {
-            return (cache as unknown) as SonglinkResponse
+            queryInfoLogger.info('Songlink cache HIT for ' + query.toString(), { queryUuid })
+            return JSON.parse(cache) as SonglinkResponse
         }
+
+        queryInfoLogger.info('Songlink cache MISS for ' + query.toString(), { queryUuid })
         const slUrl = this.getSonglinkApiUrl(query)
         queryInfoLogger.info('Querying Songlink api ' + slUrl.replace(process.env.SL_API_KEY!, 'songlink_api_key'), { queryUuid })
         try {
             const response = (await Axios.get(slUrl)) as AxiosResponse<object>
             queryInfoLogger.info('No error querying Songlink', { queryUuid })
+            // Set cache
+            redisClient.set(query.toString(), JSON.stringify(response.data))
             return response.data as SonglinkResponse
         } catch (err) {
             throw new CustomError({ message: 'Error querying Songlink', errorType: ERROR_TYPE.SL_API, queryUuid, originalError: err })
