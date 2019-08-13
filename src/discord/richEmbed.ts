@@ -11,9 +11,9 @@ export interface RichEmbedField {
 export function richEmbedfromSonglinkResponse(author: User, response: ParsedSonglinkResponse): RichEmbed {
   const songlinkId = response.entitiesByUniqueId[response.linksByPlatform.appleMusic.entityUniqueId].id
   const config: RichEmbedOptions = {
-    title: 'SongLink',
-    description: `<@!${author.id}> has shared **${response.title}** by **${response.artist}**
-    More on [<:songlink:603626770796642354> SongLink](https://song.link/i/${songlinkId})`,
+    title: `**${response.title}** by **${response.artist}**`,
+    url: `https://song.link/i/${songlinkId}`,
+    description: `Shared by <@!${author.id}>`,
     color: 0X00c4b0,
     thumbnail: { url: response.cover },
     fields: buildFields(response),
