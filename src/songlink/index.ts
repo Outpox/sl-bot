@@ -18,10 +18,10 @@ export const platforms = [
         key: 'spotify', emoji: '601869177950568448', display: 'Spotify',
     },
     {
-        key: 'youtube', emoji: '601875627594874988', display: 'Youtube',
+        key: 'youtube', emoji: '601875627594874988', display: 'YouTube',
     },
     {
-        key: 'google', emoji: '601874400911949864', display: 'Google Music',
+        key: 'google', emoji: '601874400911949864', display: 'Google Play Music',
     },
     {
         key: 'deezer', emoji: '601875350149922816', display: 'Deezer',
