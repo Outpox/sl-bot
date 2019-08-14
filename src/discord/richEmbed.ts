@@ -11,7 +11,7 @@ export interface RichEmbedField {
 export function richEmbedfromSonglinkResponse(author: User, response: ParsedSonglinkResponse): RichEmbed {
   const songlinkId = response.entitiesByUniqueId[response.linksByPlatform.appleMusic.entityUniqueId].id
   const config: RichEmbedOptions = {
-    title: `**${response.title}** by **${response.artist}**`,
+    title: minifyTitle(response),
     url: `https://song.link/i/${songlinkId}`,
     description: `Shared by <@!${author.id}>`,
     color: 0X00c4b0,
@@ -20,6 +20,16 @@ export function richEmbedfromSonglinkResponse(author: User, response: ParsedSong
   }
 
   return new RichEmbed(config)
+}
+
+function minifyTitle(response: ParsedSonglinkResponse): string {
+  const CONNECTOR = ' by '
+  const MARKDOWN_ELEMENTS_LENGTH = 8
+  let title = `**${response.title}** by **${response.artist}**`
+  if ((response.title.length + response.artist.length + CONNECTOR.length + MARKDOWN_ELEMENTS_LENGTH) > 256) {
+    title = `**${response.title.substring(0, 251)}**`
+  }
+  return title
 }
 
 function buildFields(response: ParsedSonglinkResponse): RichEmbedField[] {
