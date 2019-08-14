@@ -19,8 +19,6 @@ Start the bot with `npm start` and the bot should appear after a bit on the comm
 * Add throttling (1 query/s max per user)
 * User and server/guild blacklist
 * Delete the user's message
-* Suggestions carrousel
-* Add a cache for user queries
 * Use a db for per guild configurations
 * Configurations:
   * Override the default locale
@@ -37,3 +35,5 @@ Finished
 * ~~`sl_help` so that our users can contact us if need be~~
 * ~~Handle errors when no song can be found to get rid of the placeholders~~
 * ~~Answer a first time and then edit the message~~
+* ~~Add a cache for user queries~~
+* ~~Suggestions carrousel~~
