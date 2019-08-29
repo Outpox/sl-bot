@@ -40,11 +40,9 @@ client.on('guildCreate', guild => {
 })
 
 client.on('message', message => {
-  if (!message.author.bot) {
-    commandBag.map(cmd => {
-      cmd.execute(message)
-    })
-  }
+  commandBag.map(cmd => {
+    cmd.execute(message)
+  })
 })
 
 client.login(process.env.DISCORD_KEY)
