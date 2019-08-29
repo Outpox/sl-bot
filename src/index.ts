@@ -33,7 +33,10 @@ client.on('ready', async () => {
 discordAnalytics(client)
 
 client.on('guildCreate', guild => {
-  (guild.systemChannel as Discord.TextChannel).send(getIntroMessage())
+  // The SystemChannel can be "not set"
+  if (guild.systemChannelID !== undefined) {
+    (guild.systemChannel as Discord.TextChannel).send(getIntroMessage())
+  }
 })
 
 client.on('message', message => {
