@@ -34,7 +34,7 @@ discordAnalytics(client)
 
 client.on('guildCreate', guild => {
   // The SystemChannel can be "not set"
-  if (guild.systemChannelID !== undefined) {
+  if (guild.systemChannelID !== null) {
     (guild.systemChannel as Discord.TextChannel).send(getIntroMessage())
   }
 })
