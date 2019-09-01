@@ -12,7 +12,6 @@ const client = new Discord.Client()
 const commandBag = [
   new Command({
     prefix: '!sl',
-    alias: ['!songlink'],
     func: (ctx, args) => handleQuery(ctx, client, args),
     args: ['query'],
     allowedChannels: [ChannelType.TextChannel],

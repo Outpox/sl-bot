@@ -36,7 +36,7 @@ export function getIntroMessage(): string {
 export function getHelpMessage(): string {
   return `I'm a wip bot created by <@!116939657677111298> and <@!225317425342578689>.
   Available commands:
-  - \`!songlink Hello Adele\` or \`!sl Hello Adele\` (\`!sl\` is an alias for \`!songlink\`)
+  - \`!sl Hello Adele\` (\`!sl title artist\` or \`!sl artist title\`)
   - \`!sl_help\` to display this help message
 
   The \`!sl\` command also accept an URL instead of simple words for the following supported platforms:
@@ -54,11 +54,13 @@ export function getHelpMessage(): string {
   - Spinrilla
 
   Example:
-  - \`!sl <https://open.spotify.com/track/4sPmO7WMQUAf45kwMOtONw>\`
-  - \`!sl <https://www.youtube.com/watch?v=w4AQbsCz1AY>\`
-  - \`!sl <https://play.google.com/music/m/Tlt5evhf54uii3dnyc6spjfy7sm?t=La-haut_-_LImperatrice>\`
+  - \`!sl https://open.spotify.com/track/4sPmO7WMQUAf45kwMOtONw\`
+  - \`!sl https://www.youtube.com/watch?v=w4AQbsCz1AY\`
+  - \`!sl https://play.google.com/music/m/Tlt5evhf54uii3dnyc6spjfy7sm?t=La-haut_-_LImperatrice\`
 
   New features such as language selection, improved response and general behavior, song selection, etc are to be expected at some point. We're still working on it.
   Also thanks to Kurt from Songlink who's been helping us and answering our questions!
+
+  Please note that this bot was created by fans of the Songlink service and not the service itself.
   `
 }
